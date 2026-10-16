@@ -1,0 +1,4 @@
+{"id": "code_01", "category": "code", "prompt": "Write a Python function def calculate_bootstrap_ci(data, n_resamples=1000, ci=0.95) that calculates non-parametric confidence intervals.", "ground_truth": "def calculate_bootstrap_ci(data, n_resamples=1000, ci=0.95)"}
+{"id": "code_02", "category": "code", "prompt": "Write a Python function def is_palindrome(text: str) -> bool to check whether a string is a palindrome.", "ground_truth": "def is_palindrome(text: str) -> bool"}
+{"id": "code_03", "category": "code", "prompt": "Write a Python function def compute_pass_at_k(n, c, k) implementing the unbiased pass@k estimator.", "ground_truth": "def compute_pass_at_k(n, c, k)"}
+{"id": "code_04", "category": "code", "prompt": "Write a Python function def parse_json_safely(raw_str: str) -> dict that handles markdown code blocks.", "ground_truth": "def parse_json_safely(raw_str: str) -> dict"}
