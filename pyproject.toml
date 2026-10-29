@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Automated LLM Evaluation Suites, Benchmarking Pipelines & Continuous Statistical Regression Testing"
 readme = "README.md"
 authors = [
-    { name = "Subash Adhikari", email = "subasah@users.noreply.github.com" }
+    { name = "Subasa", email = "subasah@users.noreply.github.com" }
 ]
 license = { text = "MIT" }
 requires-python = ">=3.10"

@@ -204,7 +204,6 @@ Explore comprehensive guides in the [`docs/`](docs/) directory:
 - 📐 [**Statistical Foundations & Mathematics**](docs/STATISTICAL_FOUNDATIONS.md) - Bootstrap resampling, Pass@k derivation, Wilson intervals, and McNemar testing.
 - ⚖️ [**LLM-as-a-Judge Calibration & Bias Mitigation**](docs/LLM_AS_A_JUDGE_CALIBRATION.md) - Eliminating position, length, and self-enhancement biases.
 - 🛡️ [**Continuous Regression Testing in CI/CD**](docs/CONTINUOUS_REGRESSION_TESTING.md) - Quality gates, golden baselines, and production triage.
-- 🎯 [**Recruiter & Technical Interview Cheat Sheet**](docs/RECRUITER_INTERVIEW_CHEATSHEET.md) - High-impact interview Q&A, elevator pitches, and system design topics.
 
 ---
 
@@ -220,13 +219,12 @@ probabilistic-llm-eval-suite/
 │   ├── rag_faithfulness.jsonl
 │   ├── code_and_reasoning.jsonl
 │   └── tool_calling.jsonl
-├── docs/                          # Architecture, math, and interview guides
-│   ├── index.html                 # Interactive GitHub Pages documentation site
+├── docs/                          # Architecture and technical guides
+│   ├── index.html                 # Documentation site
 │   ├── ARCHITECTURE.md
 │   ├── STATISTICAL_FOUNDATIONS.md
 │   ├── LLM_AS_A_JUDGE_CALIBRATION.md
-│   ├── CONTINUOUS_REGRESSION_TESTING.md
-│   └── RECRUITER_INTERVIEW_CHEATSHEET.md
+│   └── CONTINUOUS_REGRESSION_TESTING.md
 ├── examples/                      # Runnable production scenarios
 │   ├── 01_prompt_regression_test.py
 │   ├── 02_model_migration_benchmark.py
@@ -250,7 +248,7 @@ probabilistic-llm-eval-suite/
 
 ## 👤 Author & Contact
 
-**Subash Adhikari**  
+**Subasa**  
 GitHub: [@subasah](https://github.com/subasah)  
 Repository: [probabilistic-llm-eval-suite](https://github.com/subasah/probabilistic-llm-eval-suite)
 
