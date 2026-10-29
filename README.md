@@ -9,7 +9,7 @@
 
 > **A production-grade framework for automated benchmarking, probabilistic evaluation, and continuous statistical regression testing for non-deterministic Large Language Model systems.**
 >
-> 🌐 **Interactive Documentation & In-Browser Playground:** [https://subasah.github.io/probabilistic-llm-eval-suite/](https://subasah.github.io/probabilistic-llm-eval-suite/)
+> 🌐 **Documentation:** [https://subasah.github.io/probabilistic-llm-eval-suite/](https://subasah.github.io/probabilistic-llm-eval-suite/) | 📊 **[Live Sample Report &nearr;](https://subasah.github.io/probabilistic-llm-eval-suite/sample_report.html)**
 
 ---
 
@@ -159,6 +159,8 @@ probeval compare \
 ---
 
 ## 📊 Interactive HTML Dashboard
+
+> 🔗 **[Explore Live Sample Report &nearr;](https://subasah.github.io/probabilistic-llm-eval-suite/sample_report.html)**
 
 Every evaluation run compiles into a standalone, interactive HTML dashboard featuring:
 - Glassmorphism dark-mode UI with Tailwind CSS

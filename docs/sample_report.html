@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProbEval | Benchmark &amp; Regression Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #090d16; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; }
+        pre { white-space: pre-wrap; word-break: break-word; }
+    </style>
+</head>
+<body class="p-6 md:p-12 text-slate-300">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 mb-8 border-b border-slate-800">
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-sm">Ψ</span>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">ProbEval Evaluation Report</h1>
+                    <p class="text-xs text-slate-400">Continuous Regression &amp; Statistical Benchmark Dashboard</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
+                <span class="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-blue-400">Model: candidate-prompt-v2.0</span>
+                <span class="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400">Run ID: run_a47064ae</span>
+                <span class="px-3 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400">Temp: 0.2 | N=5</span>
+            </div>
+        </header>
+
+        <!-- KPI Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Overall Pass Rate</p>
+                <div class="text-3xl font-bold text-white font-mono">80.0%</div>
+                <div class="mt-2 text-xs text-slate-400">
+                    <span class="text-blue-400 font-semibold">95% Bootstrap CI:</span> [64.0%, 96.0%]
+                </div>
+                <div class="text-[11px] text-slate-500 mt-0.5">Std Error: ±0.080 (N=5)</div>
+            </div>
+
+            <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Pass@1 (First-Attempt)</p>
+                <div class="text-3xl font-bold text-slate-200 font-mono">80.0%</div>
+                <p class="text-xs text-slate-400 mt-2">Single-shot accuracy indicator</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Chen et al. (2021) unbiased estimate</p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Pass@3 (Multi-Sample)</p>
+                <div class="text-3xl font-bold text-slate-200 font-mono">100.0%</div>
+                <p class="text-xs text-slate-400 mt-2">Multi-attempt recovery yield</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Budget k=3 samples</p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Benchmark Scale</p>
+                <div class="text-3xl font-bold text-slate-200 font-mono">5 Prompts</div>
+                <p class="text-xs text-slate-400 mt-2">25 total samples evaluated</p>
+                <p class="text-[11px] text-slate-500 mt-0.5">Across registered evaluators</p>
+            </div>
+        </div>
+
+        <!-- Regression Section (if applicable) -->
+        
+            <div class="mb-10 p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <span>Continuous Regression Gate</span>
+                    </h2>
+                    <span class="px-4 py-1.5 rounded-full text-sm font-bold tracking-wide" style="background-color: #10b98120; color: #10b981; border: 1px solid #10b98150;">
+                        GATE STATUS: PASSED
+                    </span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs uppercase bg-slate-800/60 text-slate-400">
+                            <tr>
+                                <th class="py-3 px-4">Metric</th>
+                                <th class="py-3 px-4 text-right">Baseline Mean</th>
+                                <th class="py-3 px-4 text-right">Candidate Mean</th>
+                                <th class="py-3 px-4 text-right">Delta (Δ)</th>
+                                <th class="py-3 px-4 text-right">p-value</th>
+                                <th class="py-3 px-4 text-center">Significant?</th>
+                                <th class="py-3 px-4">Verdict</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                <tr class="border-b border-slate-800 hover:bg-slate-800/40">
+                    <td class="py-3 px-4 font-mono text-slate-200">overall_pass_rate</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">1.000</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">0.800</td>
+                    <td class="py-3 px-4 text-right font-mono text-rose-400">-0.200 (-20.0%)</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-400">0.5000</td>
+                    <td class="py-3 px-4 text-center"><span class="text-slate-500">No (noise)</span></td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300">SAFE</span></td>
+                </tr>
+                
+                <tr class="border-b border-slate-800 hover:bg-slate-800/40">
+                    <td class="py-3 px-4 font-mono text-slate-200">json_schema_valid</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">1.000</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">0.800</td>
+                    <td class="py-3 px-4 text-right font-mono text-rose-400">-0.200 (-20.0%)</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-400">0.2500</td>
+                    <td class="py-3 px-4 text-center"><span class="text-slate-500">No (noise)</span></td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300">SAFE</span></td>
+                </tr>
+                
+                <tr class="border-b border-slate-800 hover:bg-slate-800/40">
+                    <td class="py-3 px-4 font-mono text-slate-200">latency_sla</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">0.973</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">0.973</td>
+                    <td class="py-3 px-4 text-right font-mono text-rose-400">-0.000 (-0.0%)</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-400">1.0000</td>
+                    <td class="py-3 px-4 text-center"><span class="text-slate-500">No (noise)</span></td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300">SAFE</span></td>
+                </tr>
+                
+                <tr class="border-b border-slate-800 hover:bg-slate-800/40">
+                    <td class="py-3 px-4 font-mono text-slate-200">token_f1</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">1.000</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-300">1.000</td>
+                    <td class="py-3 px-4 text-right font-mono text-emerald-400">+0.000 (+0.0%)</td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-400">1.0000</td>
+                    <td class="py-3 px-4 text-center"><span class="text-slate-500">No (noise)</span></td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300">SAFE</span></td>
+                </tr>
+                </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+        <!-- Test Case Explorer -->
+        <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                <h2 class="text-base font-bold text-white">Test Case Breakdown</h2>
+                <div class="text-xs text-slate-400">Click any row to inspect individual sample completions &amp; scores</div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs" id="test-cases-table">
+                    <thead class="uppercase bg-slate-800/60 text-slate-400 font-mono text-[10px]">
+                        <tr>
+                            <th class="py-2.5 px-3">ID</th>
+                            <th class="py-2.5 px-3">Category</th>
+                            <th class="py-2.5 px-3">Prompt</th>
+                            <th class="py-2.5 px-3 text-right">Pass Rate</th>
+                            <th class="py-2.5 px-3 text-right">Mean Latency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="test-cases-body">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Detail Modal -->
+        <div id="sample-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+                <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+                    <h3 id="modal-title" class="font-bold text-sm text-white font-mono">Test Case Inspection</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg">&times;</button>
+                </div>
+                <div id="modal-body" class="p-5 overflow-y-auto space-y-4 text-xs">
+                    <!-- Dynamic details -->
+                </div>
+            </div>
+        </div>
+
+        <footer class="pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
+            Generated with <a href="https://github.com/subasah/probabilistic-llm-eval-suite" class="text-slate-400 hover:underline">ProbEval</a> &bull; Maintained by Subasa
+        </footer>
+    </div>
+
+    <script>
+        const testCases = [{"id": "extract_01", "category": "extraction", "prompt": "Extract person profile details into JSON from: Jane Doe is a Lead AI Architect with 8 years of experience in LLMOps and Python.", "pass_rate": 1.0, "latency_ms": 55.3, "metrics": {"json_schema_valid": 1.0, "token_f1": 1.0, "latency_sla": 0.972}, "samples": [{"index": 0, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.98,\n  \"status\": \"verified\"\n}", "latency_ms": 51.2, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 51.2ms (Budget: 1000.0ms)"}}}, {"index": 1, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.95,\n  \"status\": \"verified\"\n}", "latency_ms": 53.4, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 53.4ms (Budget: 1000.0ms)"}}}, {"index": 2, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.95,\n  \"status\": \"verified\"\n}", "latency_ms": 55.2, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.972, "passed": true, "reason": "Latency 55.2ms (Budget: 1000.0ms)"}}}, {"index": 3, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.98,\n  \"status\": \"verified\"\n}", "latency_ms": 57.0, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.971, "passed": true, "reason": "Latency 57.0ms (Budget: 1000.0ms)"}}}, {"index": 4, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.98,\n  \"status\": \"verified\"\n}", "latency_ms": 59.8, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.97, "passed": true, "reason": "Latency 59.8ms (Budget: 1000.0ms)"}}}]}, {"id": "extract_02", "category": "extraction", "prompt": "Extract candidate details into JSON: Alex Mercer has 5 years of machine learning experience specializing in PyTorch and Distributed Training.", "pass_rate": 0.8, "latency_ms": 54.4, "metrics": {"json_schema_valid": 0.8, "token_f1": 1.0, "latency_sla": 0.9726}, "samples": [{"index": 0, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.91,\n  \"status\": \"verified\"\n}", "latency_ms": 51.2, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 51.2ms (Budget: 1000.0ms)"}}}, {"index": 1, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.93,\n  \"status\": \"verified\"\n}", "latency_ms": 53.1, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 53.1ms (Budget: 1000.0ms)"}}}, {"index": 2, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.98,\n  \"status\": \"verified\"\n}", "latency_ms": 54.4, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 54.4ms (Budget: 1000.0ms)"}}}, {"index": 3, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.91,\n  \"status\": \"verified\"\n}", "latency_ms": 55.9, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.972, "passed": true, "reason": "Latency 55.9ms (Budget: 1000.0ms)"}}}, {"index": 4, "output": "{\n  \"name\": \"Jane Doe\",\n  \"experience_years\": \"eight years\",\n  \"skills\": \"LLMOps, Testing\",\n  \"status\": \"verified\"\n}", "latency_ms": 57.2, "passed": false, "scores": {"json_schema_valid": {"score": 0.0, "passed": false, "reason": "SchemaValidationError: 'LLMOps, Testing' is not of type 'array' in path 'skills'"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.971, "passed": true, "reason": "Latency 57.2ms (Budget: 1000.0ms)"}}}]}, {"id": "extract_03", "category": "extraction", "prompt": "Extract data into JSON schema: Sarah Connor has 12 years of systems security experience with status verified.", "pass_rate": 0.6, "latency_ms": 53.9, "metrics": {"json_schema_valid": 0.6, "token_f1": 1.0, "latency_sla": 0.973}, "samples": [{"index": 0, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.93,\n  \"status\": \"verified\"\n}", "latency_ms": 51.2, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 51.2ms (Budget: 1000.0ms)"}}}, {"index": 1, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.93,\n  \"status\": \"verified\"\n}", "latency_ms": 52.4, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 52.4ms (Budget: 1000.0ms)"}}}, {"index": 2, "output": "{\n  \"name\": \"Jane Doe\",\n  \"status\": \"unverified\"\n}", "latency_ms": 53.6, "passed": false, "scores": {"json_schema_valid": {"score": 0.0, "passed": false, "reason": "SchemaValidationError: 'experience_years' is a required property in path ''"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 53.6ms (Budget: 1000.0ms)"}}}, {"index": 3, "output": "{\n  \"name\": \"Jane Doe\",\n  \"status\": \"unverified\"\n}", "latency_ms": 55.5, "passed": false, "scores": {"json_schema_valid": {"score": 0.0, "passed": false, "reason": "SchemaValidationError: 'experience_years' is a required property in path ''"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.972, "passed": true, "reason": "Latency 55.5ms (Budget: 1000.0ms)"}}}, {"index": 4, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.93,\n  \"status\": \"verified\"\n}", "latency_ms": 56.7, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.972, "passed": true, "reason": "Latency 56.7ms (Budget: 1000.0ms)"}}}]}, {"id": "extract_04", "category": "extraction", "prompt": "Extract into JSON format: Dev Patel has 3 years of backend cloud infrastructure experience.", "pass_rate": 1.0, "latency_ms": 52.6, "metrics": {"json_schema_valid": 1.0, "token_f1": 1.0, "latency_sla": 0.9738}, "samples": [{"index": 0, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.93,\n  \"status\": \"verified\"\n}", "latency_ms": 50.6, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.975, "passed": true, "reason": "Latency 50.6ms (Budget: 1000.0ms)"}}}, {"index": 1, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.95,\n  \"status\": \"verified\"\n}", "latency_ms": 51.8, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 51.8ms (Budget: 1000.0ms)"}}}, {"index": 2, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.94,\n  \"status\": \"verified\"\n}", "latency_ms": 52.6, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 52.6ms (Budget: 1000.0ms)"}}}, {"index": 3, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.95,\n  \"status\": \"verified\"\n}", "latency_ms": 53.5, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 53.5ms (Budget: 1000.0ms)"}}}, {"index": 4, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.94,\n  \"status\": \"verified\"\n}", "latency_ms": 54.3, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 54.3ms (Budget: 1000.0ms)"}}}]}, {"id": "extract_05", "category": "extraction", "prompt": "Extract engineer schema JSON: Elena Rostova has 6 years in quantitative analysis.", "pass_rate": 0.6, "latency_ms": 52.4, "metrics": {"json_schema_valid": 0.6, "token_f1": 1.0, "latency_sla": 0.9736}, "samples": [{"index": 0, "output": "{\"name\": \"Jane Doe\", \"role\": \"Lead AI Architect\", \"experience_years\": 8, ", "latency_ms": 51.2, "passed": false, "scores": {"json_schema_valid": {"score": 0.0, "passed": false, "reason": "JSONDecodeError: Expecting property name enclosed in double quotes at line 1 col 73"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 51.2ms (Budget: 1000.0ms)"}}}, {"index": 1, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.97,\n  \"status\": \"verified\"\n}", "latency_ms": 51.3, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 51.3ms (Budget: 1000.0ms)"}}}, {"index": 2, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.96,\n  \"status\": \"verified\"\n}", "latency_ms": 52.3, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.974, "passed": true, "reason": "Latency 52.3ms (Budget: 1000.0ms)"}}}, {"index": 3, "output": "{\n  \"name\": \"Jane Doe\",\n  \"role\": \"Lead AI Architect\",\n  \"experience_years\": 8,\n  \"skills\": [\n    \"LLMOps\",\n    \"Statistical Evaluation\",\n    \"Continuous Testing\",\n    \"Python\"\n  ],\n  \"confidence_score\": 0.97,\n  \"status\": \"verified\"\n}", "latency_ms": 53.1, "passed": true, "scores": {"json_schema_valid": {"score": 1.0, "passed": true, "reason": "Output strictly adheres to required JSON schema"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 53.1ms (Budget: 1000.0ms)"}}}, {"index": 4, "output": "{\n  \"name\": \"Jane Doe\",\n  \"experience_years\": \"eight years\",\n  \"skills\": \"LLMOps, Testing\",\n  \"status\": \"verified\"\n}", "latency_ms": 54.0, "passed": false, "scores": {"json_schema_valid": {"score": 0.0, "passed": false, "reason": "SchemaValidationError: 'eight years' is not of type 'integer' in path 'experience_years'"}, "token_f1": {"score": 1.0, "passed": true, "reason": "No ground truth provided"}, "latency_sla": {"score": 0.973, "passed": true, "reason": "Latency 54.0ms (Budget: 1000.0ms)"}}}]}];
+
+        function renderTable() {
+            const tbody = document.getElementById("test-cases-body");
+            tbody.innerHTML = testCases.map(tc => {
+                const pColor = tc.pass_rate >= 0.8 ? "text-emerald-400" : (tc.pass_rate >= 0.5 ? "text-amber-400" : "text-rose-400");
+                const snippet = tc.prompt.length > 55 ? tc.prompt.substring(0, 52) + "..." : tc.prompt;
+                return `
+                    <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 cursor-pointer" onclick="showModal('${tc.id}')">
+                        <td class="py-2.5 px-3 font-mono font-semibold text-slate-200">${tc.id}</td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[11px] bg-slate-800 text-slate-400 font-mono">${tc.category}</span></td>
+                        <td class="py-2.5 px-3 text-slate-300">${snippet}</td>
+                        <td class="py-2.5 px-3 text-right font-mono font-bold ${pColor}">${(tc.pass_rate * 100).toFixed(0)}%</td>
+                        <td class="py-2.5 px-3 text-right font-mono text-slate-400">${tc.latency_ms.toFixed(0)} ms</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function showModal(tcId) {
+            const tc = testCases.find(t => t.id === tcId);
+            if (!tc) return;
+
+            document.getElementById("modal-title").innerText = `${tc.id} (${tc.category})`;
+            let content = `
+                <div>
+                    <h4 class="text-xs uppercase font-semibold text-slate-400 mb-1">Prompt</h4>
+                    <p class="p-3 bg-slate-800/60 rounded-lg text-slate-200">${tc.prompt}</p>
+                </div>
+                <div>
+                    <h4 class="text-xs uppercase font-semibold text-slate-400 mb-2">Probabilistic Samples (${tc.samples.length} trials)</h4>
+                    <div class="space-y-3">
+            `;
+
+            tc.samples.forEach(s => {
+                const badge = s.passed ? '<span class="text-emerald-400 font-bold">PASSED</span>' : '<span class="text-rose-400 font-bold">FAILED</span>';
+                content += `
+                    <div class="p-4 bg-slate-800/40 border border-slate-700/50 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-mono text-cyan-400 font-bold">Sample #${s.index + 1} (${s.latency_ms} ms)</span>
+                            <span>${badge}</span>
+                        </div>
+                        <pre class="p-3 bg-slate-950 rounded text-xs font-mono text-slate-300 overflow-x-auto">${s.output}</pre>
+                    </div>
+                `;
+            });
+
+            content += `</div></div>`;
+            document.getElementById("modal-body").innerHTML = content;
+            document.getElementById("sample-modal").classList.remove("hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("sample-modal").classList.add("hidden");
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>
