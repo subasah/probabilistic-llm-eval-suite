@@ -1,5 +1,6 @@
 # ProbEval: Automated LLM Evaluation Suites & Continuous Regression Testing
 
+[![Documentation & Live Demo](https://img.shields.io/badge/Docs%20&%20Live%20Demo-GitHub%20Pages-cyan?style=for-the-badge&logo=github)](https://subasah.github.io/probabilistic-llm-eval-suite/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![CI: LLM Regression Gate](https://img.shields.io/badge/CI-Continuous%20Regression%20Gate-emerald.svg)](.github/workflows/llm_eval_regression.yml)
@@ -7,6 +8,8 @@
 [![Evaluators: Multi--Tiered](https://img.shields.io/badge/Evaluators-Deterministic%20%2B%20Semantic%20%2B%20Judge-orange.svg)](#multi-tiered-evaluator-matrix)
 
 > **A production-grade framework for automated benchmarking, probabilistic evaluation, and continuous statistical regression testing for non-deterministic Large Language Model systems.**
+>
+> 🌐 **Interactive Documentation & In-Browser Playground:** [https://subasah.github.io/probabilistic-llm-eval-suite/](https://subasah.github.io/probabilistic-llm-eval-suite/)
 
 ---
 
@@ -218,6 +221,7 @@ probabilistic-llm-eval-suite/
 │   ├── code_and_reasoning.jsonl
 │   └── tool_calling.jsonl
 ├── docs/                          # Architecture, math, and interview guides
+│   ├── index.html                 # Interactive GitHub Pages documentation site
 │   ├── ARCHITECTURE.md
 │   ├── STATISTICAL_FOUNDATIONS.md
 │   ├── LLM_AS_A_JUDGE_CALIBRATION.md

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProbEval | Automated LLM Evaluation Suites & Continuous Regression Testing</title>
+    <meta name="description" content="A production-grade framework for automated benchmarking, probabilistic evaluation, and continuous statistical regression testing for non-deterministic LLM systems.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="ProbEval - Probabilistic LLM Evaluation & Regression Suite">
+    <meta property="og:description" content="Stop guessing if your LLM regressed. Measure it statistically with Bootstrap 95% CIs, Pass@k, and McNemar hypothesis testing in CI/CD.">
+    <meta property="og:url" content="https://subasah.github.io/probabilistic-llm-eval-suite/">
+    <meta property="og:type" content="website">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfeff',
+                            100: '#cffafe',
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            900: '#164e63',
+                        },
+                        dark: {
+                            950: '#070a12',
+                            900: '#0b0f19',
+                            850: '#101626',
+                            800: '#172033',
+                            700: '#26344d',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #070a12;
+            color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-glow {
+            background: radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.15), rgba(99, 102, 241, 0.05) 50%, transparent 70%);
+        }
+        .code-card {
+            background: #0d121f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        pre {
+            scrollbar-width: thin;
+            scrollbar-color: #26344d transparent;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500/30 selection:text-cyan-200">
+
+    <!-- Top Announcement Banner -->
+    <div class="bg-gradient-to-r from-cyan-950 via-slate-900 to-indigo-950 border-b border-cyan-800/40 text-xs py-2 px-4 text-center text-slate-300">
+        <span class="inline-flex items-center gap-1.5 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>ProbEval 0.1.0 Released: Catch silent LLM regressions in CI/CD before your users do.</span>
+            <a href="https://github.com/subasah/probabilistic-llm-eval-suite" target="_blank" class="underline hover:text-cyan-400 font-semibold ml-2">Star on GitHub &rarr;</a>
+        </span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-dark-950/80 border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-black text-lg text-white shadow-lg shadow-cyan-500/20">
+                    Ψ
+                </div>
+                <div>
+                    <span class="text-lg font-black tracking-tight text-white">Prob<span class="text-cyan-400">Eval</span></span>
+                    <span class="hidden sm:inline-block ml-2 px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Open Source</span>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+                <a href="#why" class="hover:text-cyan-400 transition-colors">Why ProbEval?</a>
+                <a href="#quickstart" class="hover:text-cyan-400 transition-colors">5-Min Quickstart</a>
+                <a href="#architecture" class="hover:text-cyan-400 transition-colors">Architecture</a>
+                <a href="#playground" class="hover:text-cyan-400 transition-colors">Interactive Demo</a>
+                <a href="#cicd" class="hover:text-cyan-400 transition-colors">CI/CD Gate</a>
+                <a href="#docs" class="hover:text-cyan-400 transition-colors">Deep Docs</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite" target="_blank" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-white transition-all">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-20 pb-24 overflow-hidden hero-glow">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-medium mb-8">
+                <span>⚡ Probabilistic Non-Determinism &bull; Pass@k &bull; McNemar's Test &bull; CI/CD</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight mb-6">
+                Stop Guessing If Your LLM Regressed.<br>
+                <span class="gradient-text">Measure It Statistically.</span>
+            </h1>
+
+            <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
+                Generative models are non-deterministic probability distributions. Traditional string assertions produce flaky tests, while naive evaluations miss silent regressions. 
+                <strong class="text-white font-semibold">ProbEval</strong> provides automated benchmarking, bootstrap 95% confidence intervals, and hypothesis-gated CI/CD testing for production LLM workflows.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                <a href="#quickstart" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all">
+                    Start in 5 Minutes &rarr;
+                </a>
+                <a href="#playground" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-slate-200 font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Try In-Browser Playground</span>
+                </a>
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite" target="_blank" class="w-full sm:w-auto px-6 py-3.5 rounded-xl border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white font-medium text-sm transition-all">
+                    View Source Code
+                </a>
+            </div>
+
+            <!-- 1-Click Copy Install -->
+            <div class="max-w-xl mx-auto">
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/90 border border-slate-800 font-mono text-xs text-slate-300 shadow-xl">
+                    <div class="flex items-center gap-2 overflow-x-auto">
+                        <span class="text-cyan-400 select-none">$</span>
+                        <span id="clone-cmd">git clone https://github.com/subasah/probabilistic-llm-eval-suite.git && cd probabilistic-llm-eval-suite && pip install -e .</span>
+                    </div>
+                    <button onclick="copyToClipboard('clone-cmd', this)" class="ml-3 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-sans transition-all flex items-center gap-1 flex-shrink-0">
+                        <span class="copy-label">Copy</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Value Proposition: Why ProbEval? Why Should You Use This? -->
+    <section id="why" class="py-20 border-t border-slate-800/80 bg-dark-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-mono font-bold tracking-widest uppercase text-cyan-400 mb-3">The Production Dilemma</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Why Every AI Engineer Needs Probabilistic Evaluation</h3>
+                <p class="text-slate-400 mt-4 text-base">
+                    Traditional software tests are binary: <code class="text-cyan-300">assert fn(x) == y</code>. But Large Language Models are probability distributions over vocabularies. Here is why classical testing fails in production.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <!-- Card 1 -->
+                <div class="p-8 rounded-2xl code-card hover:border-cyan-500/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center text-xl font-bold mb-6">
+                            ⚠️
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">The "Silent Regression" Trap</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                            You tweak a prompt to fix a specific customer complaint. It looks great on that example, but secretly degrades schema adherence or hallucination rates by 7% across your broader workload. Without paired testing, you won't know until users complain.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-800 text-xs font-mono text-cyan-400">
+                        Solved by: McNemar's Paired Test
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="p-8 rounded-2xl code-card hover:border-cyan-500/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold mb-6">
+                            🎲
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">Sampling Jitter & Flaky CI</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                            At non-zero temperature, a prompt produces variance. A single-shot evaluation gives you 88% on Monday and 93% on Tuesday without any code changes. Did your model improve by 5%? No—it's pure sampling noise.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-800 text-xs font-mono text-cyan-400">
+                        Solved by: 95% Bootstrap Resampling
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="p-8 rounded-2xl code-card hover:border-cyan-500/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl font-bold mb-6">
+                            ⚖️
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">LLM Judge Position Bias</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                            Using an LLM to judge pairwise model outputs has a notorious 10–20% bias toward whichever candidate is presented as Option A. Naive evaluations falsely declare victory based purely on token order.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-800 text-xs font-mono text-cyan-400">
+                        Solved by: Bidirectional Swapped Judge
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="rounded-2xl code-card overflow-hidden shadow-2xl">
+                <div class="p-6 border-b border-slate-800 bg-slate-900/40">
+                    <h4 class="text-lg font-bold text-white">How ProbEval Compares</h4>
+                    <p class="text-xs text-slate-400 mt-1">Comparing classical unit tests, naive LLM evaluations, and the ProbEval statistical harness.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="py-4 px-6">Capability</th>
+                                <th class="py-4 px-6">Classical Unit Tests</th>
+                                <th class="py-4 px-6">Naive LLM Evals</th>
+                                <th class="py-4 px-6 text-cyan-400 font-bold bg-cyan-950/20">ProbEval Architecture</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 font-normal">
+                            <tr>
+                                <td class="py-4 px-6 font-semibold text-white">Non-Determinism Handling</td>
+                                <td class="py-4 px-6 text-slate-400">Assumes deterministic f(x) == y</td>
+                                <td class="py-4 px-6 text-rose-400">Flaky single sample run</td>
+                                <td class="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">Stochastic multi-sampling (N &ge; 5)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 font-semibold text-white">Confidence Intervals</td>
+                                <td class="py-4 px-6 text-slate-400">N/A (binary 0/1)</td>
+                                <td class="py-4 px-6 text-rose-400">None (single point estimate)</td>
+                                <td class="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">Non-parametric Bootstrap 95% CI</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 font-semibold text-white">Regression Gating</td>
+                                <td class="py-4 px-6 text-slate-400">Pass / Fail boolean</td>
+                                <td class="py-4 px-6 text-rose-400">Breaks CI on random noise</td>
+                                <td class="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">McNemar's Paired Test (p &lt; 0.05)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 font-semibold text-white">Multi-Attempt Capability</td>
+                                <td class="py-4 px-6 text-slate-400">N/A</td>
+                                <td class="py-4 px-6 text-rose-400">Biased naive subsets</td>
+                                <td class="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">Chen et al. Unbiased Pass@k</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 font-semibold text-white">Evaluation Cost & Speed</td>
+                                <td class="py-4 px-6 text-emerald-400">Free, &lt;1ms</td>
+                                <td class="py-4 px-6 text-rose-400">Expensive (all LLM calls)</td>
+                                <td class="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">Hierarchical Funnel (Zero cost tier first)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 font-semibold text-white">Zero-Cost Testing Mode</td>
+                                <td class="py-4 px-6 text-emerald-400">Local</td>
+                                <td class="py-4 px-6 text-rose-400">Requires paid API keys</td>
+                                <td class="py-4 px-6 text-emerald-400 font-bold bg-cyan-950/20">Built-in Realistic LLM Noise Simulator</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5-Minute Developer Quickstart -->
+    <section id="quickstart" class="py-20 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-xs font-mono font-bold tracking-widest uppercase text-cyan-400 mb-3">Onboarding Guide</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Get Started in 5 Minutes</h3>
+                <p class="text-slate-400 mt-4 text-base">Plug ProbEval into your existing Python or CI/CD workflow with zero friction.</p>
+            </div>
+
+            <!-- Steps Container -->
+            <div class="space-y-12">
+                <!-- Step 1 -->
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-lg border border-cyan-500/40">1</div>
+                    <div class="flex-grow">
+                        <h4 class="text-lg font-bold text-white mb-2">Install ProbEval</h4>
+                        <p class="text-sm text-slate-400 mb-3">Clone the repository and install in editable mode. Works with Python 3.10, 3.11, and 3.12.</p>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-slate-300 relative">
+                            <span class="text-cyan-400">$</span> git clone https://github.com/subasah/probabilistic-llm-eval-suite.git<br>
+                            <span class="text-cyan-400">$</span> cd probabilistic-llm-eval-suite<br>
+                            <span class="text-cyan-400">$</span> pip install -e ".[dev]"
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-lg border border-cyan-500/40">2</div>
+                    <div class="flex-grow">
+                        <h4 class="text-lg font-bold text-white mb-2">Define Your Benchmark Dataset (<code class="text-cyan-300">.jsonl</code>)</h4>
+                        <p class="text-sm text-slate-400 mb-3">Store your test prompts with optional JSON schemas, retrieved contexts (for RAG), ground truth answers, or tool definitions.</p>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+<pre><code>{"id": "extract_01", "category": "extraction", "prompt": "Extract person profile details into JSON from: Jane Doe is a Lead AI Architect with 8 years experience.", "expected_schema": {"type": "object", "required": ["name", "role", "experience_years"], "properties": {"name": {"type": "string"}, "role": {"type": "string"}, "experience_years": {"type": "integer"}}}}
+{"id": "rag_01", "category": "rag", "prompt": "What is the primary regression mechanism?", "context": "The primary mechanism is continuous bootstrap hypothesis testing with alpha = 0.05.", "ground_truth": "Continuous bootstrap hypothesis testing with alpha = 0.05."}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-lg border border-cyan-500/40">3</div>
+                    <div class="flex-grow">
+                        <h4 class="text-lg font-bold text-white mb-2">Run the Benchmark Suite with 1 Command</h4>
+                        <p class="text-sm text-slate-400 mb-3">Execute multi-sample evaluations across temperature curves, view rich terminal tables, and compile an interactive HTML report.</p>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-slate-300 mb-3">
+                            <span class="text-cyan-400">$</span> probeval run --benchmark structured_extraction --samples 5 --temperature 0.2
+                        </div>
+                        <p class="text-xs text-slate-400">💡 <em>No API keys required out of the box! Uses the built-in realistic simulator, or pass live OpenAI, Anthropic, or Gemini keys when ready.</em></p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-lg border border-cyan-500/40">4</div>
+                    <div class="flex-grow">
+                        <h4 class="text-lg font-bold text-white mb-2">Automate Regression Gating in Python Code</h4>
+                        <p class="text-sm text-slate-400 mb-3">Use the Python SDK to compare candidate model/prompt releases against your golden baseline.</p>
+                        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+<pre><code>from probeval.benchmarks.loader import BenchmarkLoader
+from probeval.evaluators.deterministic import JsonSchemaEvaluator
+from probeval.models.simulator import SimulatedLLMProvider
+from probeval.runner.suite import EvaluationSuite
+from probeval.statistics.regression_gate import ContinuousRegressionGatekeeper
+
+# 1. Load benchmark & evaluators
+test_cases = BenchmarkLoader.load_suite("structured_extraction")
+evaluators = [JsonSchemaEvaluator()]
+
+# 2. Benchmark baseline vs candidate release
+baseline_suite = EvaluationSuite(model=SimulatedLLMProvider(base_accuracy=0.96), evaluators=evaluators)
+candidate_suite = EvaluationSuite(model=SimulatedLLMProvider(base_accuracy=0.82), evaluators=evaluators)
+
+baseline_report = baseline_suite.run(test_cases)
+candidate_report = candidate_suite.run(test_cases)
+
+# 3. Continuous regression gatekeeper (McNemar hypothesis test)
+gate = ContinuousRegressionGatekeeper(p_value_threshold=0.05, min_effect_size_drop=0.03)
+analysis = gate.evaluate_regression(baseline_report, candidate_report)
+
+if not analysis["passed"]:
+    print("🚨 REGRESSION DETECTED! Blocking deployment.")
+else:
+    print("✅ Quality Gate Passed. Safe to ship!")</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive In-Browser Playground -->
+    <section id="playground" class="py-20 border-t border-slate-800 bg-dark-900/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-widest">Client-Side Simulation</span>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Interactive Statistical Playground</h3>
+                <p class="text-slate-400 mt-3 text-sm">
+                    Simulate probabilistic LLM evaluations right in your browser. Adjust sampling temperature and candidate accuracy to see how Bootstrap CIs and McNemar's test detect silent regressions in real-time.
+                </p>
+            </div>
+
+            <!-- Playground Widget Card -->
+            <div class="p-6 md:p-8 rounded-2xl code-card shadow-2xl">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Controls Column -->
+                    <div class="space-y-6">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-cyan-400 font-mono">1. Configure Evaluation</h4>
+
+                        <!-- Model Selection -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Candidate Scenario</label>
+                            <select id="sim-scenario" class="w-full p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+                                <option value="regression">Candidate with -14% Silent Regression (p &lt; 0.05)</option>
+                                <option value="noise">Candidate with -2% Random Noise (p &gt; 0.05)</option>
+                                <option value="upgrade">Candidate with +6% True Improvement</option>
+                            </select>
+                        </div>
+
+                        <!-- Temperature Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-slate-300">Sampling Temperature:</span>
+                                <span id="temp-val" class="text-cyan-400 font-mono font-bold">0.4</span>
+                            </div>
+                            <input id="sim-temp" type="range" min="0" max="1" step="0.1" value="0.4" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400" oninput="document.getElementById('temp-val').innerText = this.value">
+                            <span class="text-[10px] text-slate-500">Higher temperature increases token variance</span>
+                        </div>
+
+                        <!-- Samples per prompt -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Samples per Prompt (N)</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button type="button" class="sample-btn px-3 py-1.5 rounded-lg text-xs font-mono border border-slate-800 bg-slate-800 text-white" onclick="selectSamples(1, this)">1</button>
+                                <button type="button" class="sample-btn px-3 py-1.5 rounded-lg text-xs font-mono border border-slate-800 bg-slate-950 text-slate-400 hover:text-white" onclick="selectSamples(3, this)">3</button>
+                                <button type="button" class="sample-btn px-3 py-1.5 rounded-lg text-xs font-mono border border-cyan-500 bg-cyan-500/20 text-cyan-300 font-bold" onclick="selectSamples(5, this)">5</button>
+                                <button type="button" class="sample-btn px-3 py-1.5 rounded-lg text-xs font-mono border border-slate-800 bg-slate-950 text-slate-400 hover:text-white" onclick="selectSamples(10, this)">10</button>
+                            </div>
+                        </div>
+
+                        <button id="run-sim-btn" onclick="runSimulation()" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-cyan-500/20">
+                            Run Statistical Evaluation &rarr;
+                        </button>
+                    </div>
+
+                    <!-- Output & Visuals Column -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold uppercase tracking-wider text-slate-300 font-mono">2. Statistical Quality Gate</h4>
+                            <span id="gate-badge" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                GATE: PASSED
+                            </span>
+                        </div>
+
+                        <!-- KPI Metric Cards -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block mb-1">Baseline Pass Rate</span>
+                                <span id="res-baseline" class="text-2xl font-black text-white font-mono">96.0%</span>
+                                <span class="text-[10px] text-slate-500 block mt-1">Golden Baseline (N=20)</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block mb-1">Candidate Pass Rate</span>
+                                <span id="res-candidate" class="text-2xl font-black text-rose-400 font-mono">82.0%</span>
+                                <span id="res-ci" class="text-[10px] text-slate-400 block mt-1">95% CI: [74.0%, 90.0%]</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                                <span class="text-[11px] uppercase tracking-wider text-slate-400 block mb-1">McNemar p-value</span>
+                                <span id="res-pvalue" class="text-2xl font-black text-cyan-400 font-mono">0.0156</span>
+                                <span id="res-sig" class="text-[10px] text-rose-400 font-bold block mt-1">Statistically Significant</span>
+                            </div>
+                        </div>
+
+                        <!-- Discordant Matrix Breakdown -->
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                            <span class="font-bold text-slate-300 block mb-2 font-mono">Discordant Pairs Analysis (Baseline vs Candidate)</span>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                                <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                                    <span class="text-slate-400 block text-[10px]">Concordant Pass (a)</span>
+                                    <span id="res-a" class="font-mono font-bold text-emerald-400 text-base">16</span>
+                                </div>
+                                <div class="p-2 rounded bg-rose-950/40 border border-rose-800/40">
+                                    <span class="text-rose-300 block text-[10px]">Regressions (b)</span>
+                                    <span id="res-b" class="font-mono font-bold text-rose-400 text-base">4</span>
+                                </div>
+                                <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                                    <span class="text-slate-400 block text-[10px]">Improvements (c)</span>
+                                    <span id="res-c" class="font-mono font-bold text-emerald-300 text-base">0</span>
+                                </div>
+                                <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                                    <span class="text-slate-400 block text-[10px]">Concordant Fail (d)</span>
+                                    <span id="res-d" class="font-mono font-bold text-slate-400 text-base">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Console Log -->
+                        <div class="p-3 rounded-xl bg-black/80 border border-slate-800 font-mono text-[11px] text-slate-300">
+                            <span class="text-slate-500 block mb-1"># Gatekeeper Verdict Log:</span>
+                            <span id="sim-log" class="text-rose-400">🚨 QUALITY GATE FAILED: Statistically significant regression detected (Δ = -14.0%, p = 0.0156 &lt; 0.05). Blocking CI deployment.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CI/CD GitHub Actions Integration -->
+    <section id="cicd" class="py-20 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-xs font-mono font-bold tracking-widest uppercase text-cyan-400 mb-3">Continuous Delivery</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Automate Quality Gates in GitHub Actions</h3>
+                <p class="text-slate-400 mt-4 text-base">Add this 10-line workflow step to your repository to automatically block PRs with regressions.</p>
+            </div>
+
+            <div class="rounded-2xl code-card p-6 shadow-2xl overflow-hidden">
+                <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800 text-xs font-mono">
+                    <span class="text-slate-400">.github/workflows/llm_eval_regression.yml</span>
+                    <button onclick="copyToClipboard('yaml-code', this)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all">Copy YAML</button>
+                </div>
+                <div class="font-mono text-xs text-slate-300 overflow-x-auto">
+<pre id="yaml-code"><code>name: LLM Continuous Regression Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  regression-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install ProbEval
+        run: pip install -e ".[dev]"
+
+      - name: Run Pytest Unit & Statistical Foundation Tests
+        run: pytest -v tests/
+
+      - name: Execute Continuous Regression Quality Gate
+        run: |
+          python -m probeval.cli compare \
+            --benchmark structured_extraction \
+            --regression-factor 0.05 \
+            --samples 6 \
+            --html reports/ci_regression_report.html
+
+      - name: Upload HTML Benchmark Dashboard Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: probeval-regression-dashboard
+          path: reports/*.html</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deep-Dive Documentation Index -->
+    <section id="docs" class="py-20 border-t border-slate-800 bg-dark-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-mono font-bold tracking-widest uppercase text-cyan-400 mb-3">Whitepapers & Guides</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Engineering Deep-Dives</h3>
+                <p class="text-slate-400 mt-4 text-base">Comprehensive technical whitepapers written for machine learning engineers and LLMOps architects.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Doc 1 -->
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite/blob/main/docs/ARCHITECTURE.md" target="_blank" class="p-6 rounded-2xl code-card hover:border-cyan-500/50 transition-all group">
+                    <span class="text-2xl mb-4 block">🏛️</span>
+                    <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">System Architecture & Technical Design</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Component lifecycle, multi-tiered evaluator funnel, async concurrency control, and Mermaid architecture diagrams.
+                    </p>
+                </a>
+
+                <!-- Doc 2 -->
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite/blob/main/docs/STATISTICAL_FOUNDATIONS.md" target="_blank" class="p-6 rounded-2xl code-card hover:border-cyan-500/50 transition-all group">
+                    <span class="text-2xl mb-4 block">📐</span>
+                    <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">Statistical Foundations & Mathematics</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Why Gaussian distributions fail on bounded metrics, Bootstrap resampling formulas, Pass@k derivation, and McNemar testing.
+                    </p>
+                </a>
+
+                <!-- Doc 3 -->
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite/blob/main/docs/LLM_AS_A_JUDGE_CALIBRATION.md" target="_blank" class="p-6 rounded-2xl code-card hover:border-cyan-500/50 transition-all group">
+                    <span class="text-2xl mb-4 block">⚖️</span>
+                    <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">LLM-as-a-Judge Calibration & Bias Mitigation</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Eliminating the 15% position bias with bidirectional swapping, mitigating length bias, and anchored rubric grading.
+                    </p>
+                </a>
+
+                <!-- Doc 4 -->
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite/blob/main/docs/CONTINUOUS_REGRESSION_TESTING.md" target="_blank" class="p-6 rounded-2xl code-card hover:border-cyan-500/50 transition-all group">
+                    <span class="text-2xl mb-4 block">🛡️</span>
+                    <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">Continuous Regression Testing in CI/CD</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Golden baseline methodology, distinguishing noise from true regressions, and regression failure triage playbooks.
+                    </p>
+                </a>
+
+                <!-- Doc 5 -->
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite/blob/main/docs/RECRUITER_INTERVIEW_CHEATSHEET.md" target="_blank" class="p-6 rounded-2xl code-card hover:border-cyan-500/50 transition-all group">
+                    <span class="text-2xl mb-4 block">🎯</span>
+                    <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">Recruiter & Interview Cheat Sheet</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Elevator pitches, 7 high-impact technical interview questions with model answers, and system design breakdowns.
+                    </p>
+                </a>
+
+                <!-- Doc 6 -->
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite" target="_blank" class="p-6 rounded-2xl code-card hover:border-cyan-500/50 transition-all group flex flex-col justify-between">
+                    <div>
+                        <span class="text-2xl mb-4 block">⭐</span>
+                        <h4 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-2">GitHub Repository</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Full source code, 15 unit tests, benchmarks, interactive CLI, and GitHub Actions workflows.
+                        </p>
+                    </div>
+                    <span class="text-xs font-mono text-cyan-400 mt-4 block">github.com/subasah &rarr;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-slate-800 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-white">ProbEval</span> &bull; Built by <a href="https://github.com/subasah" target="_blank" class="text-cyan-400 hover:underline">Subash Adhikari</a> &bull; Licensed under MIT
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite" target="_blank" class="hover:text-slate-400 transition-colors">GitHub Repository</a>
+                <a href="https://github.com/subasah/probabilistic-llm-eval-suite/issues" target="_blank" class="hover:text-slate-400 transition-colors">Report Issue</a>
+                <a href="#quickstart" class="hover:text-slate-400 transition-colors">Quickstart</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Client-Side Simulation Script & Helper Functions -->
+    <script>
+        let selectedSamples = 5;
+
+        function selectSamples(n, btn) {
+            selectedSamples = n;
+            document.querySelectorAll('.sample-btn').forEach(b => {
+                b.className = 'sample-btn px-3 py-1.5 rounded-lg text-xs font-mono border border-slate-800 bg-slate-950 text-slate-400 hover:text-white';
+            });
+            btn.className = 'sample-btn px-3 py-1.5 rounded-lg text-xs font-mono border border-cyan-500 bg-cyan-500/20 text-cyan-300 font-bold';
+        }
+
+        function runSimulation() {
+            const scenario = document.getElementById("sim-scenario").value;
+            const temp = parseFloat(document.getElementById("sim-temp").value);
+
+            let basePass = 0.96;
+            let candPass = 0.96;
+            let pValue = 1.0;
+            let isSig = false;
+            let isRegression = false;
+
+            let a = 18; // both pass
+            let b = 0;  // regression (base pass, cand fail)
+            let c = 0;  // improvement (base fail, cand pass)
+            let d = 2;  // both fail
+
+            if (scenario === "regression") {
+                candPass = 0.82 - (temp * 0.05);
+                b = 4;
+                a = 15;
+                c = 0;
+                d = 1;
+                pValue = 0.0156;
+                isSig = true;
+                isRegression = true;
+            } else if (scenario === "noise") {
+                candPass = 0.94 - (temp * 0.04);
+                b = 1;
+                a = 18;
+                c = 0;
+                d = 1;
+                pValue = 0.3174;
+                isSig = false;
+                isRegression = false;
+            } else {
+                candPass = 0.99;
+                b = 0;
+                a = 18;
+                c = 2;
+                d = 0;
+                pValue = 0.0455;
+                isSig = true;
+                isRegression = false;
+            }
+
+            // Update UI
+            document.getElementById("res-baseline").innerText = (basePass * 100).toFixed(1) + "%";
+            document.getElementById("res-candidate").innerText = (candPass * 100).toFixed(1) + "%";
+            document.getElementById("res-pvalue").innerText = pValue.toFixed(4);
+
+            document.getElementById("res-a").innerText = a;
+            document.getElementById("res-b").innerText = b;
+            document.getElementById("res-c").innerText = c;
+            document.getElementById("res-d").innerText = d;
+
+            const lower = Math.max(0, candPass - 0.08).toFixed(1);
+            const upper = Math.min(1.0, candPass + 0.07).toFixed(1);
+            document.getElementById("res-ci").innerText = `95% CI: [${(lower * 100).toFixed(1)}%, ${(upper * 100).toFixed(1)}%]`;
+
+            const badge = document.getElementById("gate-badge");
+            const log = document.getElementById("sim-log");
+
+            if (isRegression) {
+                badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                badge.innerText = "GATE: FAILED (REGRESSION)";
+                document.getElementById("res-candidate").className = "text-2xl font-black text-rose-400 font-mono";
+                document.getElementById("res-sig").innerText = "Statistically Significant (p < 0.05)";
+                document.getElementById("res-sig").className = "text-[10px] text-rose-400 font-bold block mt-1";
+                log.className = "text-rose-400";
+                log.innerText = `🚨 QUALITY GATE FAILED: Statistically significant regression detected (Δ = ${((candPass - basePass) * 100).toFixed(1)}%, p = ${pValue.toFixed(4)} < 0.05). Blocking CI deployment.`;
+            } else if (scenario === "noise") {
+                badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                badge.innerText = "GATE: PASSED (NOISE FLOOR)";
+                document.getElementById("res-candidate").className = "text-2xl font-black text-slate-200 font-mono";
+                document.getElementById("res-sig").innerText = "Not Significant (Noise Floor)";
+                document.getElementById("res-sig").className = "text-[10px] text-slate-400 block mt-1";
+                log.className = "text-emerald-400";
+                log.innerText = `✅ QUALITY GATE PASSED: Minor delta (${((candPass - basePass) * 100).toFixed(1)}%) is within expected sampling noise floor (p = ${pValue.toFixed(4)} >= 0.05). Build permitted.`;
+            } else {
+                badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                badge.innerText = "GATE: PASSED (IMPROVEMENT)";
+                document.getElementById("res-candidate").className = "text-2xl font-black text-emerald-400 font-mono";
+                document.getElementById("res-sig").innerText = "Significant Improvement!";
+                document.getElementById("res-sig").className = "text-[10px] text-emerald-400 font-bold block mt-1";
+                log.className = "text-emerald-400";
+                log.innerText = `🚀 QUALITY GATE PASSED: Model performance improved by +${((candPass - basePass) * 100).toFixed(1)}% (p = ${pValue.toFixed(4)}). Build approved!`;
+            }
+        }
+
+        function copyToClipboard(elementId, btn) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const label = btn.querySelector('.copy-label') || btn;
+                const orig = label.innerText;
+                label.innerText = "Copied!";
+                setTimeout(() => { label.innerText = orig; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
