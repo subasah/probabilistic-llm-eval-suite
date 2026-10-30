@@ -198,7 +198,45 @@ When a pull request triggers the regression gate, `ProbEval` generates a structu
 
 ---
 
-## 📚 Deep-Dive Documentation
+## 📚 Academic & Research Foundations
+
+`ProbEval`'s architectural design, statistical algorithms, and bias mitigation protocols adhere to and directly infer from foundational research papers in natural language processing, LLM benchmarking, and statistical inference:
+
+### 1. Evaluating Large Language Models Trained on Code
+- **Paper**: [Evaluating Large Language Models Trained on Code (Chen et al., OpenAI 2021) — arXiv:2107.03374](https://arxiv.org/abs/2107.03374)
+- **Description**: Introduced the HumanEval benchmark and derived the mathematically unbiased closed-form estimator for the $\text{pass@}k$ metric across $n$ samples ($n \ge k$) with $c$ passing trials:
+  $$\text{pass@}k = \mathbb{E}\left[1 - \frac{\binom{n-c}{k}}{\binom{n}{k}}\right]$$
+  This formulation eliminates the severe sampling variance and systematic underestimation caused by naive sampling evaluations.
+- **How It Inspired & Relevant to ProbEval**: Implemented directly in [`src/probeval/statistics/pass_at_k.py`](src/probeval/statistics/pass_at_k.py). Rather than running fragile single-shot assertions that miss intermittent probabilistic failures, ProbEval executes $n$ stochastic generations per test case and calculates closed-form unbiased Pass@1, Pass@k, and exact combinatorial sample variances.
+
+### 2. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena
+- **Paper**: [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (Zheng et al., LMSYS Org / UC Berkeley, NeurIPS 2023) — arXiv:2306.05685](https://arxiv.org/abs/2306.05685)
+- **Description**: Quantified and formalized systemic cognitive biases when using large language models as autonomous evaluators—most prominently **Position Bias** (models favor candidate A over candidate B by up to 70% regardless of quality), **Verbosity Bias** (favoring long answers), and **Self-Enhancement Bias**.
+- **How It Inspired & Relevant to ProbEval**: Implemented in [`src/probeval/evaluators/llm_judge.py`](src/probeval/evaluators/llm_judge.py) (`PairwiseJudge`). ProbEval mandates a symmetric bidirectional position swap: presenting (Candidate, Baseline) and then (Baseline, Candidate). A candidate is awarded a win only if it succeeds across both permutations. Inconsistent judgements are identified as position bias and normalized to a calibrated tie.
+
+### 3. A Hitchhiker’s Guide to Statistical Significance in Natural Language Processing
+- **Paper**: [A Hitchhiker’s Guide to Statistical Significance in Natural Language Processing (Dror et al., ACL 2018) — ACL Anthology P18-1139](https://aclanthology.org/P18-1139/)
+- **Description**: Demonstrated that naive aggregate metric comparisons (such as raw accuracy point deltas) result in rampant Type I (false positives) and Type II (false negatives) errors in NLP benchmarks. Formalized paired non-parametric significance testing as the gold standard for evaluating paired NLP model outputs.
+- **How It Inspired & Relevant to ProbEval**: Implemented in [`src/probeval/statistics/hypothesis_tests.py`](src/probeval/statistics/hypothesis_tests.py) and enforced in [`src/probeval/statistics/regression_gate.py`](src/probeval/statistics/regression_gate.py). When comparing a candidate against a golden baseline on identical test cases, ProbEval constructs a $2 \times 2$ contingency matrix of discordant pairs (Passed &rarr; Failed vs. Failed &rarr; Passed) and calculates McNemar's paired test with continuity correction (or exact binomial tests for small samples) before failing CI/CD builds.
+
+### 4. An Empirical Investigation of Statistical Significance in NLP
+- **Paper**: [An Empirical Investigation of Statistical Significance in NLP (Berg-Kirkpatrick, Burkett, and Klein, EMNLP 2012) — ACL Anthology D12-1091](https://aclanthology.org/D12-1091/)
+- **Description**: Investigated significance testing and non-parametric bootstrap resampling across NLP evaluation tasks, demonstrating that empirical bootstrap resampling ($B \ge 1,000$) provides faithful confidence intervals without making unrealistic Gaussian normality assumptions on bounded metrics.
+- **How It Inspired & Relevant to ProbEval**: Implemented in [`src/probeval/statistics/bootstrap.py`](src/probeval/statistics/bootstrap.py). Every aggregated metric reported by ProbEval (Pass Rate, SQuAD F1, Faithfulness, Latency) includes empirical 95% bootstrap confidence intervals computed over $B=1,500$ Monte Carlo replicates, enabling developers to differentiate between true performance improvements and sampling noise.
+
+### 5. RAGAS: Automated Evaluation of Retrieval Augmented Generation
+- **Paper**: [RAGAS: Automated Evaluation of Retrieval Augmented Generation (Es et al., EACL 2024) — arXiv:2305.14283](https://arxiv.org/abs/2305.14283)
+- **Description**: Introduced a reference-free framework for assessing Retrieval-Augmented Generation (RAG) pipelines by breaking generated text into atomic factual claims and evaluating **Context Faithfulness** (hallucination detection) and **Answer Relevance** without requiring ground truth references.
+- **How It Inspired & Relevant to ProbEval**: Inferred in [`src/probeval/evaluators/rag_triad.py`](src/probeval/evaluators/rag_triad.py). ProbEval performs sentence-level atomic claim decomposition and context overlap verification as an ultra-fast Tier 3 screening step (<10ms, $0 cost) to catch ungrounded statements and hallucinations before escalating to expensive LLM-as-a-judge evaluators.
+
+### 6. How Is ChatGPT's Behavior Changing Over Time?
+- **Paper**: [How Is ChatGPT's Behavior Changing over Time? (Chen, Zaharia, and Zou, Stanford & UC Berkeley, 2023) — arXiv:2307.09009](https://arxiv.org/abs/2307.09009)
+- **Description**: Documented significant longitudinal drift, unexpected capability regressions, and formatting shifts in production foundation model APIs over monthly vendor updates across reasoning, code synthesis, and safety guardrails.
+- **How It Inspired & Relevant to ProbEval**: Formed the foundational motivation for ProbEval's continuous regression testing architecture in [`src/probeval/statistics/regression_gate.py`](src/probeval/statistics/regression_gate.py) and GitHub Actions workflow. Demonstrates that LLM APIs must be continuously guarded by frozen golden baselines and automated statistical gates in CI/CD, treating model checkpoints as dynamic, shifting dependencies.
+
+---
+
+## 📖 Deep-Dive Documentation
 
 Explore comprehensive guides in the [`docs/`](docs/) directory:
 

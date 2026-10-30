@@ -84,6 +84,7 @@
                 <a href="#quickstart" class="hover:text-white transition-colors">Quickstart</a>
                 <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
                 <a href="#cicd" class="hover:text-white transition-colors">CI/CD Gate</a>
+                <a href="#research" class="hover:text-white transition-colors">Research</a>
                 <a href="#docs" class="hover:text-white transition-colors">Guides</a>
                 <a href="sample_report.html" target="_blank" class="text-blue-400 hover:text-blue-300 font-semibold transition-colors flex items-center gap-1">
                     <span>Sample Report</span>
@@ -382,6 +383,189 @@ jobs:
         with:
           name: regression-report
           path: reports/*.html</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academic & Research Foundations -->
+    <section id="research" class="py-16 border-b border-slate-800/80">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="mb-10">
+                <h2 class="text-xs font-mono font-semibold uppercase tracking-wider text-blue-400 mb-2">Theoretical Foundations</h2>
+                <h3 class="text-2xl sm:text-3xl font-bold text-white">Academic Research &amp; Inferred Algorithms</h3>
+                <p class="text-slate-400 text-sm mt-2 leading-relaxed">
+                    ProbEval bridges academic statistical NLP research and modern LLM production engineering. The suite directly infers algorithms, mathematical estimators, and bias-mitigation protocols from these peer-reviewed papers:
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Paper 1 -->
+                <div class="p-6 rounded-xl bg-surface-900 border border-slate-800 hover:border-slate-700 transition-colors">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-1 rounded text-[11px] font-mono font-semibold bg-blue-950/60 text-blue-300 border border-blue-800/50">
+                            Unbiased Pass@k Estimator
+                        </span>
+                        <a href="https://arxiv.org/abs/2107.03374" target="_blank" class="inline-flex items-center gap-1 text-xs font-mono text-slate-400 hover:text-blue-400 transition-colors">
+                            <span>arXiv:2107.03374</span>
+                            <span class="text-[10px]">&nearr;</span>
+                        </a>
+                    </div>
+                    <h4 class="text-base sm:text-lg font-bold text-white mb-1">
+                        <a href="https://arxiv.org/abs/2107.03374" target="_blank" class="hover:text-blue-400 transition-colors">
+                            Evaluating Large Language Models Trained on Code
+                        </a>
+                    </h4>
+                    <p class="text-xs text-slate-400 font-mono mb-3">Mark Chen, Jerry Tworek, Heewoo Jun, et al. &bull; OpenAI (2021)</p>
+                    <div class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
+                        <p>
+                            <strong class="text-white">What it does:</strong> Introduced the HumanEval benchmark and derived the mathematically unbiased closed-form estimator for the Pass@k metric across <code class="text-slate-300">n</code> samples (<code class="text-slate-300">n &ge; k</code>) with <code class="text-slate-300">c</code> passing trials. This eliminated the extreme variance and systematic underestimation caused by naive sampling evaluations.
+                        </p>
+                        <div class="p-3 rounded-lg bg-surface-850/80 border border-slate-800/80 text-slate-300">
+                            <span class="text-blue-400 font-semibold font-mono text-[11px]">Relevance to ProbEval:</span>
+                            <span class="text-slate-300 ml-1">Implemented directly in <code class="text-blue-300 font-mono">src/probeval/statistics/pass_at_k.py</code>. Rather than relying on single-shot evaluations that miss intermittent non-deterministic failures, ProbEval samples <code class="text-slate-300 font-mono">n</code> completions per test case and calculates exact closed-form unbiased Pass@1, Pass@k, and combinatorial variance bounds.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paper 2 -->
+                <div class="p-6 rounded-xl bg-surface-900 border border-slate-800 hover:border-slate-700 transition-colors">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-1 rounded text-[11px] font-mono font-semibold bg-indigo-950/60 text-indigo-300 border border-indigo-800/50">
+                            LLM-as-a-Judge Bias Mitigation
+                        </span>
+                        <a href="https://arxiv.org/abs/2306.05685" target="_blank" class="inline-flex items-center gap-1 text-xs font-mono text-slate-400 hover:text-blue-400 transition-colors">
+                            <span>arXiv:2306.05685</span>
+                            <span class="text-[10px]">&nearr;</span>
+                        </a>
+                    </div>
+                    <h4 class="text-base sm:text-lg font-bold text-white mb-1">
+                        <a href="https://arxiv.org/abs/2306.05685" target="_blank" class="hover:text-blue-400 transition-colors">
+                            Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena
+                        </a>
+                    </h4>
+                    <p class="text-xs text-slate-400 font-mono mb-3">Lianmin Zheng, Wei-Lin Chiang, Hao Zhang, et al. &bull; LMSYS / UC Berkeley (NeurIPS 2023)</p>
+                    <div class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
+                        <p>
+                            <strong class="text-white">What it does:</strong> Quantified systemic cognitive biases in LLMs evaluating other LLMs—demonstrating that models exhibit severe position bias (favoring Option A up to 70% of the time), verbosity bias, and self-enhancement bias when judging candidate answers.
+                        </p>
+                        <div class="p-3 rounded-lg bg-surface-850/80 border border-slate-800/80 text-slate-300">
+                            <span class="text-blue-400 font-semibold font-mono text-[11px]">Relevance to ProbEval:</span>
+                            <span class="text-slate-300 ml-1">Implemented in <code class="text-blue-300 font-mono">src/probeval/evaluators/llm_judge.py</code> (<code class="text-slate-300 font-mono">PairwiseJudge</code>). ProbEval executes symmetric bidirectional position swapping: presenting (Candidate, Baseline) and reversed (Baseline, Candidate). A win is granted only if the candidate wins in both permutations. Inconsistent results are explicitly flagged as position bias and normalized to calibrated ties.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paper 3 -->
+                <div class="p-6 rounded-xl bg-surface-900 border border-slate-800 hover:border-slate-700 transition-colors">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-1 rounded text-[11px] font-mono font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/50">
+                            Paired Significance &amp; McNemar's Test
+                        </span>
+                        <a href="https://aclanthology.org/P18-1139/" target="_blank" class="inline-flex items-center gap-1 text-xs font-mono text-slate-400 hover:text-blue-400 transition-colors">
+                            <span>ACL Anthology P18-1139</span>
+                            <span class="text-[10px]">&nearr;</span>
+                        </a>
+                    </div>
+                    <h4 class="text-base sm:text-lg font-bold text-white mb-1">
+                        <a href="https://aclanthology.org/P18-1139/" target="_blank" class="hover:text-blue-400 transition-colors">
+                            A Hitchhiker’s Guide to Statistical Significance in Natural Language Processing
+                        </a>
+                    </h4>
+                    <p class="text-xs text-slate-400 font-mono mb-3">Rotem Dror, Gili Baumer, Marina Bogomolov, Roi Reichart &bull; ACL (2018)</p>
+                    <div class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
+                        <p>
+                            <strong class="text-white">What it does:</strong> Proved that naive aggregate metric comparisons (e.g. raw accuracy point deltas) create widespread Type I (false positive) and Type II errors in NLP evaluations, and formalized paired non-parametric tests like McNemar's test as the gold standard for matched benchmarks.
+                        </p>
+                        <div class="p-3 rounded-lg bg-surface-850/80 border border-slate-800/80 text-slate-300">
+                            <span class="text-blue-400 font-semibold font-mono text-[11px]">Relevance to ProbEval:</span>
+                            <span class="text-slate-300 ml-1">Implemented in <code class="text-blue-300 font-mono">src/probeval/statistics/hypothesis_tests.py</code> and enforced by <code class="text-blue-300 font-mono">src/probeval/statistics/regression_gate.py</code>. When comparing candidate prompts against a golden baseline on identical test cases, ProbEval constructs a 2x2 contingency matrix of discordant pairs (Passed &rarr; Failed vs. Failed &rarr; Passed) and calculates McNemar's test with continuity correction (or exact binomial tests) before blocking CI builds.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paper 4 -->
+                <div class="p-6 rounded-xl bg-surface-900 border border-slate-800 hover:border-slate-700 transition-colors">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-1 rounded text-[11px] font-mono font-semibold bg-amber-950/60 text-amber-300 border border-amber-800/50">
+                            Non-Parametric Bootstrap CIs
+                        </span>
+                        <a href="https://aclanthology.org/D12-1091/" target="_blank" class="inline-flex items-center gap-1 text-xs font-mono text-slate-400 hover:text-blue-400 transition-colors">
+                            <span>ACL Anthology D12-1091</span>
+                            <span class="text-[10px]">&nearr;</span>
+                        </a>
+                    </div>
+                    <h4 class="text-base sm:text-lg font-bold text-white mb-1">
+                        <a href="https://aclanthology.org/D12-1091/" target="_blank" class="hover:text-blue-400 transition-colors">
+                            An Empirical Investigation of Statistical Significance in NLP
+                        </a>
+                    </h4>
+                    <p class="text-xs text-slate-400 font-mono mb-3">Taylor Berg-Kirkpatrick, David Burkett, Dan Klein &bull; EMNLP (2012)</p>
+                    <div class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
+                        <p>
+                            <strong class="text-white">What it does:</strong> Investigated significance testing and non-parametric bootstrap resampling across NLP tasks, establishing that empirical bootstrap distributions correctly capture metric uncertainty on bounded NLP metrics without relying on flawed Gaussian normality assumptions.
+                        </p>
+                        <div class="p-3 rounded-lg bg-surface-850/80 border border-slate-800/80 text-slate-300">
+                            <span class="text-blue-400 font-semibold font-mono text-[11px]">Relevance to ProbEval:</span>
+                            <span class="text-slate-300 ml-1">Implemented in <code class="text-blue-300 font-mono">src/probeval/statistics/bootstrap.py</code>. Every metric computed by ProbEval (Pass Rate, SQuAD F1, Faithfulness, Latency) reports empirical 95% bootstrap confidence intervals generated across <code class="text-slate-300 font-mono">B = 1,500</code> Monte Carlo resamples, allowing engineers to verify whether a metric change is true signal or random sampling jitter.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paper 5 -->
+                <div class="p-6 rounded-xl bg-surface-900 border border-slate-800 hover:border-slate-700 transition-colors">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-1 rounded text-[11px] font-mono font-semibold bg-rose-950/60 text-rose-300 border border-rose-800/50">
+                            The RAG Triad &amp; Hallucination Detection
+                        </span>
+                        <a href="https://arxiv.org/abs/2305.14283" target="_blank" class="inline-flex items-center gap-1 text-xs font-mono text-slate-400 hover:text-blue-400 transition-colors">
+                            <span>arXiv:2305.14283</span>
+                            <span class="text-[10px]">&nearr;</span>
+                        </a>
+                    </div>
+                    <h4 class="text-base sm:text-lg font-bold text-white mb-1">
+                        <a href="https://arxiv.org/abs/2305.14283" target="_blank" class="hover:text-blue-400 transition-colors">
+                            RAGAS: Automated Evaluation of Retrieval Augmented Generation
+                        </a>
+                    </h4>
+                    <p class="text-xs text-slate-400 font-mono mb-3">Shahul Es, Jithin James, Luis Espinosa-Anke, Steven Schockaert &bull; EACL (2024)</p>
+                    <div class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
+                        <p>
+                            <strong class="text-white">What it does:</strong> Formulated the reference-free evaluation framework for Retrieval-Augmented Generation (RAG) by decomposing model generations into atomic statements and quantifying Context Faithfulness (grounding) and Answer Relevance without requiring human ground truths.
+                        </p>
+                        <div class="p-3 rounded-lg bg-surface-850/80 border border-slate-800/80 text-slate-300">
+                            <span class="text-blue-400 font-semibold font-mono text-[11px]">Relevance to ProbEval:</span>
+                            <span class="text-slate-300 ml-1">Inferred in <code class="text-blue-300 font-mono">src/probeval/evaluators/rag_triad.py</code>. ProbEval performs sentence-level atomic claim extraction and context overlap validation as an ultra-fast Tier 3 filter (&lt;10ms, $0 cost) to catch ungrounded claims and hallucinations before escalating to expensive model judges.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paper 6 -->
+                <div class="p-6 rounded-xl bg-surface-900 border border-slate-800 hover:border-slate-700 transition-colors">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-1 rounded text-[11px] font-mono font-semibold bg-purple-950/60 text-purple-300 border border-purple-800/50">
+                            Model Drift &amp; Temporal Regressions
+                        </span>
+                        <a href="https://arxiv.org/abs/2307.09009" target="_blank" class="inline-flex items-center gap-1 text-xs font-mono text-slate-400 hover:text-blue-400 transition-colors">
+                            <span>arXiv:2307.09009</span>
+                            <span class="text-[10px]">&nearr;</span>
+                        </a>
+                    </div>
+                    <h4 class="text-base sm:text-lg font-bold text-white mb-1">
+                        <a href="https://arxiv.org/abs/2307.09009" target="_blank" class="hover:text-blue-400 transition-colors">
+                            How Is ChatGPT's Behavior Changing over Time?
+                        </a>
+                    </h4>
+                    <p class="text-xs text-slate-400 font-mono mb-3">Lingjiao Chen, Matei Zaharia, James Zou &bull; Stanford University &amp; UC Berkeley (2023)</p>
+                    <div class="space-y-2.5 text-xs text-slate-300 leading-relaxed">
+                        <p>
+                            <strong class="text-white">What it does:</strong> Documented significant longitudinal drift, unexpected capability drops, and formatting regressions in commercial foundation model APIs over monthly vendor updates across reasoning, code synthesis, and safety guardrails.
+                        </p>
+                        <div class="p-3 rounded-lg bg-surface-850/80 border border-slate-800/80 text-slate-300">
+                            <span class="text-blue-400 font-semibold font-mono text-[11px]">Relevance to ProbEval:</span>
+                            <span class="text-slate-300 ml-1">Provides the core empirical motivation for ProbEval's continuous regression gatekeeper in <code class="text-blue-300 font-mono">src/probeval/statistics/regression_gate.py</code> and CI/CD pipelines. Proves that third-party LLM APIs cannot be treated as static dependencies and must be monitored continuously against frozen golden baselines.</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
